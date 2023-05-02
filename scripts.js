@@ -40,19 +40,19 @@ let fragment = document.createDocumentFragment();
 
 const extracted = books.slice(0, 36);
 
-
 for (let i = 0; i < extracted.length; i++){
 
-    const { author, image, title, id } = extracted[i];
+    let { author, image, title, id } = extracted[i];
+
+    author = authors[author];
 
     const preview = {
-        author, // Fix adds author as ID.
+        author,
         id,
         image,
         title,
     };
-
-    fragment.appendChild(createPreview(preview));    
+    fragment.appendChild(createPreview(preview));  
 };
 
 let mainHtml = document.querySelector('[data-list-items]');
