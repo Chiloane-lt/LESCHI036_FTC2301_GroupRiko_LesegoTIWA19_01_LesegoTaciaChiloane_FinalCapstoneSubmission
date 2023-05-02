@@ -3,6 +3,9 @@
  * parameters and logic to improve code readeability.
  *
  * 2- Functions must be declared using const or let keywords.
+ * 
+ * 3- Some code, for instance code creating dropdown menu options,
+ * could be better created using a function. This had the benefit of being reusable.
  */
 
 // Import data.
@@ -10,7 +13,7 @@ import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
 import { createPreview } from "./functions.js"
 
 const range = [0, 36]
-const matches = books;
+const matches = books; // Still don't know what this does.
 let page = 1;
 
 /* Checks if books is not empty/undefined, and if it is an array.
@@ -87,21 +90,40 @@ for (const [id, name] of Object.entries(authors)) {
 let searchAuthors = document.querySelector('[data-search-authors]');
 searchAuthors.appendChild(authorsHtml);
 
-// data-settings-theme.value === window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
-// v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' | 'day'
+document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
+let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
 
 // documentElement.style.setProperty('--color-dark', css[v].dark);
 // documentElement.style.setProperty('--color-light', css[v].light);
-// data-list-button = "Show more (books.length - BOOKS_PER_PAGE)"
 
-// data-list-button.disabled = !(matches.length - [page * BOOKS_PER_PAGE] > 0)
+let moreButton = document.querySelector('[data-list-button]') 
+// moreButton.innerText = `Show more ${books.length - BOOKS_PER_PAGE}`
+// console.log(moreButton.innerText)
+//The above 2 lines of code are redundant.
 
-// data-list-button.innerHTML = /* html */ [
-//     '<span>Show more</span>',
-//     '<span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>',
-// ]
+// This check might need to run everytime the button is clicked.
+if (matches.length - [page * BOOKS_PER_PAGE] <= 0) {
+    moreButton.disabled;
+};
 
-// data-search-cancel.click() { data-search-overlay.open === false }
+moreButton.innerHTML = /* html */ `
+    <span>Show more</span>
+    <span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>
+`
+let searchCancel = document.querySelector('[data-search-cancel]');
+const searchCancelHandler = (event) => {
+    document.querySelector('[data-search-overlay]').open = false;
+}
+searchCancel.addEventListener('Click', searchCancelHandler);
+
+let settingsCancel = document.querySelector('[data-settings-cancel]');
+const settingsCancelHandler = (event) => {
+    document.querySelector('[data-settings-overlay]').open = false;
+}
+settingsCancel.addEventListener('Click', settingsCancelHandler);
+
+
+// searchCancel.click() { data-search-overlay.open === false }
 // data-settings-cancel.click() { querySelect(data-settings-overlay).open === false }
 // data-settings-form.submit() { actions.settings.submit }
 // data-list-close.click() { data-list-active.open === false }
