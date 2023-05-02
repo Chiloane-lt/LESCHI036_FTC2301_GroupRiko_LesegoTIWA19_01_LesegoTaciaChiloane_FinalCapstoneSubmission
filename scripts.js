@@ -52,38 +52,40 @@ for (let i = 0; i < extracted.length; i++){
     fragment.appendChild(createPreview(preview));    
 };
 
-let mainHTML = document.querySelector('[data-list-items]');
-mainHTML.appendChild(fragment);
+let mainHtml = document.querySelector('[data-list-items]');
+mainHtml.appendChild(fragment);
 
-// genres = document.createDocumentFragment()
-// element = document.createElement('option')
-// element.value = 'any'
-// element = 'All Genres'
-// genres.appendChild(element)
+let genresHtml = document.createDocumentFragment();
+let element = document.createElement('option');
+element.value = 'any'
+element.innerText = 'All Genres';
+genresHtml.appendChild(element);
 
-// for ([id, name]; Object.entries(genres); i++) {
-//     document.createElement('option')
-//     element.value = value
-//     element.innerText = text
-//     genres.appendChild(element)
-// }
+for (const [id, name] of Object.entries(genres)) {
+    element = document.createElement('option');
+    element.value = id;
+    element.innerText = name;
+    genresHtml.appendChild(element);
+};
 
-// data-search-genres.appendChild(genres)
+let searchGenres = document.querySelector('[data-search-genres]');
+searchGenres.appendChild(genresHtml);
 
-// authors = document.createDocumentFragment()
-// element = document.createElement('option')
-// element.value = 'any'
-// element.innerText = 'All Authors'
-// authors.appendChild(element)
+let authorsHtml = document.createDocumentFragment();
+element = document.createElement('option');
+element.value = 'any';
+element.innerText = 'All Authors';
+authorsHtml.appendChild(element);
 
-// for ([id, name];Object.entries(authors); id++) {
-//     document.createElement('option')
-//     element.value = value
-//     element = text
-//     authors.appendChild(element)
-// }
+for (const [id, name] of Object.entries(authors)) {
+    element = document.createElement('option');
+    element.value = id;
+    element.innerText = name;
+    authorsHtml.appendChild(element);
+};
 
-// data-search-authors.appendChild(authors)
+let searchAuthors = document.querySelector('[data-search-authors]');
+searchAuthors.appendChild(authorsHtml);
 
 // data-settings-theme.value === window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
 // v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' | 'day'

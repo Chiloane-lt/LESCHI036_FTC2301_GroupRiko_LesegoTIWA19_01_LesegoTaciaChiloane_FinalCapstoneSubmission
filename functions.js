@@ -21,3 +21,9 @@ export const createPreview = (props) => {
 
     return newElement;
 };
+
+export const createGenres = (obj) => {
+    let genresHtml = document.createDocumentFragment();
+    let element = document.createElement('option');
+    
+};
