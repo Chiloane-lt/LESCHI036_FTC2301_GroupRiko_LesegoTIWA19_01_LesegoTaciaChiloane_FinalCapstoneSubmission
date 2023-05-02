@@ -1,46 +1,59 @@
 
-/* Code is not commented. Functions must have comments describing 
+/* 1- Code is not commented. Functions must have comments describing 
  * parameters and logic to improve code readeability.
+ *
+ * 2- Functions must be declared using const or let keywords.
  */
 
 // Import data.
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
+import { createPreview } from "./functions.js"
 
+const range = [0, 36]
 const matches = books;
 let page = 1;
 
-console.log(Array.isArray(books));
+/* Checks if books is not empty/undefined, and if it is an array.
+ * Changed && to || because both are invalid. 
+ */
+if (!books || !Array.isArray(books)) throw new Error('Source required');
 
-/* Checks if books is not empty/undefined, and if it is an array.*/
-if (!books && !Array.isArray(books)) throw new Error('Source required');
+/* range is an array to check if range is within 0 - 36.
+ * Change "< 2" to "=== 2" to avoid future errors.
+ */
+if (!range && range.length === 2) throw new Error('Range must be an array with two numbers');
 
-// if (!range && range.length < 2) throw new Error('Range must be an array with two numbers')
+const day = {
+    dark: '10, 10, 20',
+    light: '255, 255, 255',
+};
 
-// day = {
-//     dark: '10, 10, 20',
-//     light: '255, 255, 255',
-// }
+const night = {
+    dark: '255, 255, 255',
+    light: '10, 10, 20',
+};
 
-// night = {
-//     dark: '255, 255, 255',
-//     light: '10, 10, 20',
-// }
+let fragment = document.createDocumentFragment();
 
-// fragment = document.createDocumentFragment()
-// const extracted = books.slice(0, 36)
+const extracted = books.slice(0, 36);
 
-// for ({ author, image, title, id }; extracted; i++) {
-//     const preview = createPreview({
-//         author,
-//         id,
-//         image,
-//         title
-//     })
 
-//     fragment.appendChild(preview)
-// }
+for (let i = 0; i < extracted.length; i++){
 
-// data-list-items.appendChild(fragment)
+    const { author, image, title, id } = extracted[i];
+
+    const preview = {
+        author, // Fix adds author as ID.
+        id,
+        image,
+        title,
+    };
+
+    fragment.appendChild(createPreview(preview));    
+};
+
+let mainHTML = document.querySelector('[data-list-items]');
+mainHTML.appendChild(fragment);
 
 // genres = document.createDocumentFragment()
 // element = document.createElement('option')
