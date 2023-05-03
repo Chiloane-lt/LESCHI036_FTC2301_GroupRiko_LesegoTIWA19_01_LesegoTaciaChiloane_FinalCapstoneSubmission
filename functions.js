@@ -1,4 +1,4 @@
-import { authors } from './data.js'
+import { authors, BOOKS_PER_PAGE } from './data.js'
 
 /**
  * Creates an html fragment given an object.
@@ -7,7 +7,7 @@ import { authors } from './data.js'
  * @returns {HTMLElement} 
  **/
 export const createPreview = (props) => {
-    const { author, image, title, id } = props;
+    const { author, image, title } = props;
 
     const newElement = document.createElement('div');
     newElement.className = 'preview';
@@ -59,3 +59,8 @@ export const createPreviewsFragment  = (array , start, end) => {
     };
     return previewFragment;
 };
+
+export const updateRemaining = (array, page) => {
+    let remaining = array.length - (page * BOOKS_PER_PAGE);
+    return remaining;
+}; 

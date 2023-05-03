@@ -1,20 +1,21 @@
 
 /* 1 - Code is not commented. Functions must have comments describing 
- * parameters and logic to improve code readeability.
+ *      parameters and logic to improve code readeability.
  *
  * 2 - Functions must be declared using const or let keywords.
  * 
  * 3 - Some code, for instance code creating dropdown menu options,
- *     could be better created using a function. This was done with functions to create HTML fragments.
- *     This had the benefit of being reusable.
+ *      could be better created using a function. This was done with functions to create HTML fragments.
+ *      This had the benefit of being reusable.
  * 
- * 4 - Break apart code into sections based on function.
+ * 4 - Code is randomly arranged with code for functions that work together placed far from each other.
+ *      To improve readability, code has been rearranged and broken up into sections based on function.
  * 
  */
 
 // Import data.
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
-import { createPreview, createPreviewsFragment } from "./functions.js"
+import { createPreviewsFragment, updateRemaining } from "./functions.js"
 
 const range = [0, 36]
 const matches = books; // Try to convert matches to an indepenedent copy.
@@ -83,49 +84,13 @@ let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').m
 // documentElement.style.setProperty('--color-dark', css[v].dark);
 // documentElement.style.setProperty('--color-light', css[v].light);
 
-let moreButton = document.querySelector('[data-list-button]') 
-// moreButton.innerText = `Show more ${books.length - BOOKS_PER_PAGE}`
-// console.log(moreButton.innerText)
-//The above 2 lines of code are redundant.
 
-// This check might need to run everytime the button is clicked.
-if (matches.length - [page * BOOKS_PER_PAGE] <= 0) {
-    moreButton.disabled;
-};
+ /* ------------------------SEARCH FUNCTION-------------------------*/
 
-moreButton.innerHTML = /* html */ `
-    <span>Show more</span>
-    <span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>
-`
-let searchCancel = document.querySelector('[data-search-cancel]');
-searchCancel.addEventListener('Click', () => {
-    document.querySelector('[data-search-overlay]').open = false;
-});
-
-let settingsCancel = document.querySelector('[data-settings-cancel]');
-settingsCancel.addEventListener('Click', () => {
-    document.querySelector('[data-settings-overlay]').open = false;
-});
-
-
-// let settingsSubmit = document.querySelector('[data-settings-form]')
-// settingsSubmit.addEventListener()
-// data-settings-form.submit() { actions.settings.submit }
-//Above needs work.
-
-
-let listClose = document.querySelector('[data-list-close]');
-listClose.addEventListener('Click', () => {
-    document.querySelector('[data-list-active]').open = false;
-});
-
-let listButton = document.querySelector('[data-list-button]');
-listButton.addEventListener('Click', () => {
-    // document.querySelector([data-list-items]).appendChild(createPreviewsFragment(matches, page x BOOKS_PER_PAGE, {page + 1} x BOOKS_PER_PAGE]))
-    // actions.list.updateRemaining()
-    // page = page + 1
-});
-
+ let searchCancel = document.querySelector('[data-search-cancel]');
+ searchCancel.addEventListener('click', () => {
+     document.querySelector('[data-search-overlay]').open = false;
+ });
 
 // data-header-search.click() {
 //     data-search-overlay.open === true ;
@@ -149,6 +114,61 @@ listButton.addEventListener('Click', () => {
 
 //         if titleMatch && authorMatch && genreMatch => result.push(book)
 //     }
+
+
+/* -------------------------------DISPLAY SETTINGS--------------------------- */
+
+let settingsCancel = document.querySelector('[data-settings-cancel]');
+settingsCancel.addEventListener('click', () => {
+    document.querySelector('[data-settings-overlay]').open = false;
+});
+
+
+// let settingsSubmit = document.querySelector('[data-settings-form]')
+// settingsSubmit.addEventListener()
+// data-settings-form.submit() { actions.settings.submit }
+//Above needs work.
+
+
+/* -----------------------------PAGE SCROLL--------------------------------- */  /* COMPLETED */
+
+let moreButton = document.querySelector('[data-list-button]');
+
+let pagesRemaining = matches.length - (page * BOOKS_PER_PAGE);
+
+moreButton.innerHTML = /* html */ `
+    <span>Show more</span>
+    <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
+`;
+
+moreButton.addEventListener('click', () => {
+
+document.querySelector('[data-list-items]').appendChild(createPreviewsFragment(matches, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
+page = page + 1;
+pagesRemaining = updateRemaining(matches, page);
+
+moreButton.innerHTML = /* html */ `
+    <span>Show more</span>
+    <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
+`
+});
+
+
+// This check might need to run everytime the button is clicked.
+if (matches.length - [page * BOOKS_PER_PAGE] <= 0) {
+    moreButton.disabled;
+};
+
+
+
+
+
+
+
+let listClose = document.querySelector('[data-list-close]');
+listClose.addEventListener('click', () => {
+    document.querySelector('[data-list-active]').open = false;
+});
 
 //     if display.length < 1 
 //     data-list-message.class.add('list__message_show')
