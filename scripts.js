@@ -140,7 +140,7 @@ searchSubmit.addEventListener('submit', (event) => {
     searchOverlay.close();
 
     // Appends search results to html.
-    mainHtml.appendChild(createPreviewsFragment(searchResult));
+    // mainHtml.appendChild(createPreviewsFragment(searchResult));
 
     searchSubmit.reset();
 
@@ -213,55 +213,48 @@ if (pagesRemaining <= 0) {
 
 /* -------------------------------------PREVIEW OVERLAY--------------------------------*/
 
-const listClose = document.querySelector('[data-list-close]');
-listClose.addEventListener('click', () => {
-    document.querySelector('[data-list-active]').open = false;
+
+const summaryButton = document.querySelector('[data-preview]');
+const summaryOverlay = document.querySelector('[data-list-active]');
+const summaryBlur = document.querySelector('[data-list-blur]');
+const summaryImage = document.querySelector('[data-list-image]');
+const summaryTitle = document.querySelector('[data-list-title]');
+const summarySubTitle = document.querySelector('[data-list-subtitle]');
+const summaryDescription = document.querySelector('[data-list-description]');
+const summaryClose = document.querySelector('[data-list-close]');
+
+// Only works on first book. Use queryselectorAll maybe??
+summaryButton.addEventListener('click', () => {
+
+    let summaryId = summaryButton.getAttribute('data-preview');
+    let searchBooks = books.find((book) => book.id === summaryId);
+    const { author, image, title, description, published } = searchBooks;
+
+    let year = new Date(published).getFullYear();
+
+    summaryBlur.src = `${image}`;
+    summaryImage.src = `${image}`;
+    summaryTitle.innerHTML = `${title}`;
+    summarySubTitle.innerHTML = `${authors[author]} (${year})`;
+    summaryDescription.innerHTML = `${description}`;
+    
+    summaryOverlay.showModal();    
 });
+
+summaryClose.addEventListener('click', () => {
+    summaryOverlay.close();
+});
+
 
 //     if display.length < 1 
 //     data-list-message.class.add('list__message_show')
 //     else data-list-message.class.remove('list__message_show')
     
 
-//     data-list-items.innerHTML = ''
-//     const fragment = document.createDocumentFragment()
-//     const extracted = source.slice(range[0], range[1])
-
-//     for ({ author, image, title, id }; extracted; i++) {
-//         const { author: authorId, id, image, title } = props
-
-//         element = document.createElement('button')
-//         element.classList = 'preview'
-//         element.setAttribute('data-preview', id)
-
-//         element.innerHTML = /* html */ `
-//             <img
-//                 class="preview__image"
-//                 src="${image}"
-//             />
-            
-//             <div class="preview__info">
-//                 <h3 class="preview__title">${title}</h3>
-//                 <div class="preview__author">${authors[authorId]}</div>
-//             </div>
-//         `
-
-//         fragment.appendChild(element)
-//     }
     
-//     data-list-items.appendChild(fragments)
-//     initial === matches.length - [page * BOOKS_PER_PAGE]
-//     remaining === hasRemaining ? initial : 0
-//     data-list-button.disabled = initial > 0
 
-//     data-list-button.innerHTML = /* html */ `
-//         <span>Show more</span>
-//         <span class="list__remaining"> (${remaining})</span>
-//     `
-
-//     window.scrollTo({ top: 0, behavior: 'smooth' });
-//     data-search-overlay.open = false
-// }
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
+    // data-search-overlay.open = false
 
 // data-list-items.click() {
 //     pathArray = Array.from(event.path || event.composedPath())

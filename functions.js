@@ -7,17 +7,23 @@ import { authors, BOOKS_PER_PAGE } from './data.js'
  * @returns {HTMLElement} 
  **/
 export const createPreview = (props) => {
-    const { author, image, title } = props;
+    const { author, image, title, id } = props;
 
-    const newElement = document.createElement('div');
+    const newElement = document.createElement('button');
     newElement.className = 'preview';
+    newElement.setAttribute('data-preview', id);
 
     newElement.innerHTML =  /* HTML */`
-        <img src="${image}" class="preview__image">
-        <div class="preview__info">
-            <h3 class="preview__title">${title}</h3>
-            <p class="preview__author">${author}</p>
-        </div>`
+        <img
+                class="preview__image"
+                src="${image}"
+            />
+            
+            <div class="preview__info">
+                <h3 class="preview__title">${title}</h3>
+                <div class="preview__author">${author}</div>
+            </div>
+        `
 
     return newElement;
 };
