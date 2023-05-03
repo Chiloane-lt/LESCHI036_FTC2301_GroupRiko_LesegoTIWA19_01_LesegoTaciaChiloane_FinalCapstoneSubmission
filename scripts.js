@@ -96,6 +96,7 @@ const searchSubmit = document.querySelector('[data-search-form]');
 
  searchCancel.addEventListener('click', () => {
      searchOverlay.close();
+     searchSubmit.reset();
  });
 
  searchButton.addEventListener('click', () => {
@@ -142,8 +143,10 @@ searchSubmit.addEventListener('submit', (event) => {
     // Appends search results to html.
     // mainHtml.appendChild(createPreviewsFragment(searchResult));
 
-    searchSubmit.reset();
+    //move to top of page after scrolling.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    searchSubmit.reset();
 });
 
 /* -------------------------------DISPLAY SETTINGS--------------------------- */ 
@@ -253,27 +256,4 @@ summaryClose.addEventListener('click', () => {
 
     
 
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
-    // data-search-overlay.open = false
-
-// data-list-items.click() {
-//     pathArray = Array.from(event.path || event.composedPath())
-//     active;
-
-//     for (node; pathArray; i++) {
-//         if active break;
-//         const previewId = node?.dataset?.preview
-    
-//         for (const singleBook of books) {
-//             if (singleBook.id === id) active = singleBook
-//         } 
-//     }
-    
-//     if !active return
-//     data-list-active.open === true
-//     data-list-blur + data-list-image === active.image
-//     data-list-title === active.title
-    
-//     data-list-subtitle === '${authors[active.author]} (${Date(active.published).year})'
-//     data-list-description === active.description
-// }
+    // 
