@@ -46,7 +46,11 @@ let fragment = createPreviewsFragment(matches, 0, 36)
 let mainHtml = document.querySelector('[data-list-items]');
 mainHtml.appendChild(fragment);
 
-let genresHtml = document.createDocumentFragment();
+/* ------------------------SEARCH FUNCTIONS-------------------------*/
+
+/* Genres */
+
+const genresHtml = document.createDocumentFragment();
 let element = document.createElement('option');
 element.value = 'any'
 element.innerText = 'All Genres';
@@ -59,10 +63,13 @@ for (const [id, name] of Object.entries(genres)) {
     genresHtml.appendChild(element);
 };
 
-let searchGenres = document.querySelector('[data-search-genres]');
+const searchGenres = document.querySelector('[data-search-genres]');
 searchGenres.appendChild(genresHtml);
 
-let authorsHtml = document.createDocumentFragment();
+
+/* Authors */
+
+const authorsHtml = document.createDocumentFragment();
 element = document.createElement('option');
 element.value = 'any';
 element.innerText = 'All Authors';
@@ -75,64 +82,111 @@ for (const [id, name] of Object.entries(authors)) {
     authorsHtml.appendChild(element);
 };
 
-let searchAuthors = document.querySelector('[data-search-authors]');
+const searchAuthors = document.querySelector('[data-search-authors]');
 searchAuthors.appendChild(authorsHtml);
 
 
-/* ------------------------SEARCH FUNCTIONS-------------------------*/
+/* Search Overlay */ 
 
- let searchCancel = document.querySelector('[data-search-cancel]');
+const searchCancel = document.querySelector('[data-search-cancel]');
+const searchButton = document.querySelector('[data-header-search]');
+const searchOverlay = document.querySelector('[data-search-overlay]');
+const seacrhTitle = document.querySelector('[data-search-title]');
+const searchSubmit = document.querySelector('[data-search-form]');
+
  searchCancel.addEventListener('click', () => {
-     document.querySelector('[data-search-overlay]').open = false;
+     searchOverlay.close();
  });
 
-// data-header-search.click() {
-//     data-search-overlay.open === true ;
-//     data-search-title.focus();
-// }
+ searchButton.addEventListener('click', () => {
+    searchOverlay.showModal();
+    seacrhTitle.focus();                // Might be reduntant.
+ }); 
 
-// data-search-form.click(filters) {
-//     preventDefault()
-//     const formData = new FormData(event.target)
-//     const filters = Object.fromEntries(formData)
-//     result = []
+searchSubmit.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-//     for (book; booksList; i++) {
-//         titleMatch = filters.title.trim() = '' && book.title.toLowerCase().includes[filters.title.toLowerCase()]
-//         authorMatch = filters.author = 'any' || book.author === filters.author
+    const formData = new FormData(event.target);
+    const filters = Object.fromEntries(formData);
+    const result = Object.entries(filters); 
 
-//         {
-//             genreMatch = filters.genre = 'any'
-//             for (genre; book.genres; i++) { if singleGenre = filters.genre { genreMatch === true }}}
-//         }
+    let searchResult = [];
 
-//         if titleMatch && authorMatch && genreMatch => result.push(book)
-//     }
+    for (let x = 0; x < books.length; x++) {
+
+        let titleMatch = null;
+        let authorMatch = null;
+        let genreMatch = null;
 
 
-/* -------------------------------DISPLAY SETTINGS--------------------------- */
+        // Needs testing for title search
+        if ((filters.title.trim()) && (books[x].title.toLowerCase().includes(filters.title.toLowerCase()))) {
+            titleMatch = books[x].title;
+        }; 
+        
+        if (filters.author !== 'any') {
+            authorMatch = books[x].author;
+        };
 
-document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
+        if (filters.genre !== 'any') {
+            genreMatch = books[x].genres;                      
+        };
+
+        if (titleMatch && authorMatch && genreMatch) {
+            searchResult.push(books[x])
+
+        }
+    }
+    searchOverlay.close();
+
+    // Appends search results to html.
+    mainHtml.appendChild(createPreviewsFragment(searchResult));
+
+    searchSubmit.reset();
+
+});
+
+/* -------------------------------DISPLAY SETTINGS--------------------------- */ 
+
+// Check darkmode/lightmode settings of user's system and assign them to the websites settings.
+document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+
 let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
 
+// Not sure what this does.
 // documentElement.style.setProperty('--color-dark', css[v].dark);
 // documentElement.style.setProperty('--color-light', css[v].light);
 
-let settingsCancel = document.querySelector('[data-settings-cancel]');
-settingsCancel.addEventListener('click', () => {
-    document.querySelector('[data-settings-overlay]').open = false;
+const settingButton = document.querySelector('[data-header-settings]');
+const settingsCancel = document.querySelector('[data-settings-cancel]');
+const settingsSubmit = document.querySelector('[data-settings-form]');
+
+settingButton.addEventListener('click', () => {
+    document.querySelector('[data-settings-overlay]').showModal();
 });
 
+settingsCancel.addEventListener('click', () => {
+    document.querySelector('[data-settings-overlay]').close();
+});
 
-// let settingsSubmit = document.querySelector('[data-settings-form]')
-// settingsSubmit.addEventListener()
-// data-settings-form.submit() { actions.settings.submit }
-//Above needs work.
+settingsSubmit.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const result = Object.fromEntries(formData);
+
+    // if (result.theme === 'night') {
+    //     document.documentElement.style.setProperty('--color-dark', result.theme);
+    // } else if (result.theme === 'day') {
+    //     document.documentElement.style.setProperty('--color-light', result.theme);
+    // };
+
+    document.querySelector('[data-settings-overlay]').close();
+});
 
 
 /* -----------------------------PAGE SCROLL--------------------------------- */  /* COMPLETED */
 
-let moreButton = document.querySelector('[data-list-button]');
+const moreButton = document.querySelector('[data-list-button]');
 
 let pagesRemaining = matches.length - (page * BOOKS_PER_PAGE);
 
@@ -157,16 +211,9 @@ if (pagesRemaining <= 0) {
 });
 
 
-// This check might need to run everytime the button is clicked.
+/* -------------------------------------PREVIEW OVERLAY--------------------------------*/
 
-
-
-
-
-
-
-
-let listClose = document.querySelector('[data-list-close]');
+const listClose = document.querySelector('[data-list-close]');
 listClose.addEventListener('click', () => {
     document.querySelector('[data-list-active]').open = false;
 });
@@ -214,15 +261,6 @@ listClose.addEventListener('click', () => {
 
 //     window.scrollTo({ top: 0, behavior: 'smooth' });
 //     data-search-overlay.open = false
-// }
-
-// data-settings-overlay.submit; {
-//     preventDefault()
-//     const formData = new FormData(event.target)
-//     const result = Object.fromEntries(formData)
-//     document.documentElement.style.setProperty('--color-dark', css[result.theme].dark);
-//     document.documentElement.style.setProperty('--color-light', css[result.theme].light);
-//     data-settings-overlay).open === false
 // }
 
 // data-list-items.click() {
