@@ -60,6 +60,15 @@ export const createPreviewsFragment  = (array , start, end) => {
     return previewFragment;
 };
 
+
+/**
+ * Determines the number of pages to travese on the app based on the total
+ * number of books available in the database.
+ * 
+ * @param {array} array with total number of books.
+ * @param {number} page current page.
+ * @returns {number}
+ */
 export const updateRemaining = (array, page) => {
     let remaining = array.length - (page * BOOKS_PER_PAGE);
     return remaining;

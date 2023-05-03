@@ -78,14 +78,8 @@ for (const [id, name] of Object.entries(authors)) {
 let searchAuthors = document.querySelector('[data-search-authors]');
 searchAuthors.appendChild(authorsHtml);
 
-document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
-let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
 
-// documentElement.style.setProperty('--color-dark', css[v].dark);
-// documentElement.style.setProperty('--color-light', css[v].light);
-
-
- /* ------------------------SEARCH FUNCTION-------------------------*/
+/* ------------------------SEARCH FUNCTIONS-------------------------*/
 
  let searchCancel = document.querySelector('[data-search-cancel]');
  searchCancel.addEventListener('click', () => {
@@ -118,6 +112,12 @@ let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').m
 
 /* -------------------------------DISPLAY SETTINGS--------------------------- */
 
+document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
+let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
+
+// documentElement.style.setProperty('--color-dark', css[v].dark);
+// documentElement.style.setProperty('--color-light', css[v].light);
+
 let settingsCancel = document.querySelector('[data-settings-cancel]');
 settingsCancel.addEventListener('click', () => {
     document.querySelector('[data-settings-overlay]').open = false;
@@ -142,22 +142,23 @@ moreButton.innerHTML = /* html */ `
 `;
 
 moreButton.addEventListener('click', () => {
+if (pagesRemaining <= 0) {
+    moreButton.disabled;
+}else {
+    document.querySelector('[data-list-items]').appendChild(createPreviewsFragment(matches, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
+    page = page + 1;
+    pagesRemaining = updateRemaining(matches, page);
 
-document.querySelector('[data-list-items]').appendChild(createPreviewsFragment(matches, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
-page = page + 1;
-pagesRemaining = updateRemaining(matches, page);
-
-moreButton.innerHTML = /* html */ `
+    moreButton.innerHTML = /* html */ `
     <span>Show more</span>
     <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
-`
+    `
+    }
 });
 
 
 // This check might need to run everytime the button is clicked.
-if (matches.length - [page * BOOKS_PER_PAGE] <= 0) {
-    moreButton.disabled;
-};
+
 
 
 
