@@ -1,19 +1,23 @@
 
-/* 1- Code is not commented. Functions must have comments describing 
+/* 1 - Code is not commented. Functions must have comments describing 
  * parameters and logic to improve code readeability.
  *
- * 2- Functions must be declared using const or let keywords.
+ * 2 - Functions must be declared using const or let keywords.
  * 
- * 3- Some code, for instance code creating dropdown menu options,
- * could be better created using a function. This had the benefit of being reusable.
+ * 3 - Some code, for instance code creating dropdown menu options,
+ *     could be better created using a function. This was done with functions to create HTML fragments.
+ *     This had the benefit of being reusable.
+ * 
+ * 4 - Break apart code into sections based on function.
+ * 
  */
 
 // Import data.
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
-import { createPreview } from "./functions.js"
+import { createPreview, createPreviewsFragment } from "./functions.js"
 
 const range = [0, 36]
-const matches = books; // Still don't know what this does.
+const matches = books; // Try to convert matches to an indepenedent copy.
 let page = 1;
 
 /* Checks if books is not empty/undefined, and if it is an array.
@@ -36,24 +40,7 @@ const night = {
     light: '10, 10, 20',
 };
 
-let fragment = document.createDocumentFragment();
-
-const extracted = books.slice(0, 36);
-
-for (let i = 0; i < extracted.length; i++){
-
-    let { author, image, title, id } = extracted[i];
-
-    author = authors[author];
-
-    const preview = {
-        author,
-        id,
-        image,
-        title,
-    };
-    fragment.appendChild(createPreview(preview));  
-};
+let fragment = createPreviewsFragment(matches, 0, 36)
 
 let mainHtml = document.querySelector('[data-list-items]');
 mainHtml.appendChild(fragment);
@@ -111,28 +98,34 @@ moreButton.innerHTML = /* html */ `
     <span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>
 `
 let searchCancel = document.querySelector('[data-search-cancel]');
-const searchCancelHandler = (event) => {
+searchCancel.addEventListener('Click', () => {
     document.querySelector('[data-search-overlay]').open = false;
-}
-searchCancel.addEventListener('Click', searchCancelHandler);
+});
 
 let settingsCancel = document.querySelector('[data-settings-cancel]');
-const settingsCancelHandler = (event) => {
+settingsCancel.addEventListener('Click', () => {
     document.querySelector('[data-settings-overlay]').open = false;
-}
-settingsCancel.addEventListener('Click', settingsCancelHandler);
+});
 
 
-// searchCancel.click() { data-search-overlay.open === false }
-// data-settings-cancel.click() { querySelect(data-settings-overlay).open === false }
+// let settingsSubmit = document.querySelector('[data-settings-form]')
+// settingsSubmit.addEventListener()
 // data-settings-form.submit() { actions.settings.submit }
-// data-list-close.click() { data-list-active.open === false }
+//Above needs work.
 
-// data-list-button.click() {
-//     document.querySelector([data-list-items]).appendChild(createPreviewsFragment(matches, page x BOOKS_PER_PAGE, {page + 1} x BOOKS_PER_PAGE]))
-//     actions.list.updateRemaining()
-//     page = page + 1
-// }
+
+let listClose = document.querySelector('[data-list-close]');
+listClose.addEventListener('Click', () => {
+    document.querySelector('[data-list-active]').open = false;
+});
+
+let listButton = document.querySelector('[data-list-button]');
+listButton.addEventListener('Click', () => {
+    // document.querySelector([data-list-items]).appendChild(createPreviewsFragment(matches, page x BOOKS_PER_PAGE, {page + 1} x BOOKS_PER_PAGE]))
+    // actions.list.updateRemaining()
+    // page = page + 1
+});
+
 
 // data-header-search.click() {
 //     data-search-overlay.open === true ;
