@@ -11,6 +11,7 @@
  * 4 - Code is randomly arranged with code for functions that work together placed far from each other.
  *      To improve readability, code has been rearranged and broken up into sections based on function.
  * 
+ * 5 - The dark/light mode icon is measleading. It looks more like a login button.
  */
 
 // Import data.
@@ -85,7 +86,6 @@ for (const [id, name] of Object.entries(authors)) {
 
 const searchAuthors = document.querySelector('[data-search-authors]');
 searchAuthors.appendChild(authorsHtml);
-
 
 /* Search Overlay */ 
 
@@ -163,6 +163,9 @@ document.querySelector('[data-settings-theme]').value = window.matchMedia && win
 
 let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
 
+// documentElement.style.setProperty('--color-dark', css[v]);
+// documentElement.style.setProperty('--color-light', css[v]);
+
 const settingButton = document.querySelector('[data-header-settings]');
 const settingsCancel = document.querySelector('[data-settings-cancel]');
 const settingsSubmit = document.querySelector('[data-settings-form]');
@@ -176,15 +179,24 @@ settingsCancel.addEventListener('click', () => {
     settingsSubmit.reset();
 });
 
+const css = {
+    day : ['255, 255, 255', '10, 10, 20'],
+    night: ['10, 10, 20','255, 255, 255']
+};
+
 settingsSubmit.addEventListener('submit', (event) => {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const result = Object.fromEntries(formData);
 
-    if (result.theme === 'night') {
-        document.documentElement.style.setProperty('color-scheme', 'dark light');
-    } else if (result.theme === 'day') {
-        document.documentElement.style.setProperty('color-scheme', 'light dark');
+    const formData = new FormData(event.target);
+
+    const selected = Object.fromEntries(formData);
+
+    if (selected.theme === 'night') {
+        document.documentElement.style.setProperty('--color-light', css[selected.theme][0]);
+        document.documentElement.style.setProperty('--color-dark', css[selected.theme][1]);        
+    } else if (selected.theme === 'day') {
+        document.documentElement.style.setProperty('--color-light', css[selected.theme][0]);
+        document.documentElement.style.setProperty('--color-dark', css[selected.theme][1]);
     };
 
     document.querySelector('[data-settings-overlay]').close();
@@ -218,7 +230,7 @@ if (pagesRemaining <= 0) {
 });
 
 
-/* -------------------------------------PREVIEW OVERLAY--------------------------------*/
+/* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
 
 
 const summaryList = document.querySelectorAll('[data-preview]');
