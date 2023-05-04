@@ -15,6 +15,7 @@
 
 // Import data.
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
+import { createPreview } from "./functions.js";
 import { createPreviewsFragment, updateRemaining } from "./functions.js"
 
 const range = [0, 36]
@@ -112,32 +113,38 @@ searchSubmit.addEventListener('submit', (event) => {
     const result = Object.entries(filters); 
 
     let searchResult = [];
+    let titleMatch = null;
+    let authorMatch = null;
+    let genreMatch = null;
 
     for (let x = 0; x < books.length; x++) {
 
-        let titleMatch = null;
-        let authorMatch = null;
-        let genreMatch = null;
-
-
         // Needs testing for title search
         if ((filters.title.trim()) && (books[x].title.toLowerCase().includes(filters.title.toLowerCase()))) {
-            titleMatch = books[x].title;
+            titleMatch = books[x];
+            searchResult.push(titleMatch);
         }; 
         
-        if (filters.author !== 'any') {
-            authorMatch = books[x].author;
+        if (filters.author !== 'All Authors' && books[x].author.includes(filters.author)) {
+            authorMatch = books[x];
+            searchResult.push(authorMatch);
         };
 
-        if (filters.genre !== 'any') {
-            genreMatch = books[x].genres;                      
+        if (filters.genre !== 'All Genres' && books[x].genres.includes(filters.genre)) {
+            genreMatch = books[x];   
+            searchResult.push(genreMatch);            
         };
 
-        if (titleMatch && authorMatch && genreMatch) {
-            searchResult.push(books[x])
+        if (!(filters.title.trim()) && (authorMatch === 'All Authors') && (genreMatch === 'All Genres')) {
+            console.log("You searched nothing!")
+            console.log(searchResult)
 
-        }
+        };
     }
+
+    // const searchHtml = createPreviewsFragment(searchResult);
+    // mainHtml.appendChild(searchHtml )
+
     searchOverlay.close();
 
     // Appends search results to html.
@@ -156,10 +163,6 @@ document.querySelector('[data-settings-theme]').value = window.matchMedia && win
 
 let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
 
-// Not sure what this does.
-// documentElement.style.setProperty('--color-dark', css[v].dark);
-// documentElement.style.setProperty('--color-light', css[v].light);
-
 const settingButton = document.querySelector('[data-header-settings]');
 const settingsCancel = document.querySelector('[data-settings-cancel]');
 const settingsSubmit = document.querySelector('[data-settings-form]');
@@ -170,6 +173,7 @@ settingButton.addEventListener('click', () => {
 
 settingsCancel.addEventListener('click', () => {
     document.querySelector('[data-settings-overlay]').close();
+    settingsSubmit.reset();
 });
 
 settingsSubmit.addEventListener('submit', (event) => {
@@ -177,11 +181,11 @@ settingsSubmit.addEventListener('submit', (event) => {
     const formData = new FormData(event.target);
     const result = Object.fromEntries(formData);
 
-    // if (result.theme === 'night') {
-    //     document.documentElement.style.setProperty('--color-dark', result.theme);
-    // } else if (result.theme === 'day') {
-    //     document.documentElement.style.setProperty('--color-light', result.theme);
-    // };
+    if (result.theme === 'night') {
+        document.documentElement.style.setProperty('color-scheme', 'dark light');
+    } else if (result.theme === 'day') {
+        document.documentElement.style.setProperty('color-scheme', 'light dark');
+    };
 
     document.querySelector('[data-settings-overlay]').close();
 });
@@ -217,7 +221,7 @@ if (pagesRemaining <= 0) {
 /* -------------------------------------PREVIEW OVERLAY--------------------------------*/
 
 
-const summaryButton = document.querySelector('[data-preview]');
+const summaryList = document.querySelectorAll('[data-preview]');
 const summaryOverlay = document.querySelector('[data-list-active]');
 const summaryBlur = document.querySelector('[data-list-blur]');
 const summaryImage = document.querySelector('[data-list-image]');
@@ -226,8 +230,9 @@ const summarySubTitle = document.querySelector('[data-list-subtitle]');
 const summaryDescription = document.querySelector('[data-list-description]');
 const summaryClose = document.querySelector('[data-list-close]');
 
-// Only works on first book. Use queryselectorAll maybe??
-summaryButton.addEventListener('click', () => {
+[...summaryList].forEach(function(buttons) {
+    let summaryButton = buttons;
+    summaryButton.addEventListener('click', () => {
 
     let summaryId = summaryButton.getAttribute('data-preview');
     let searchBooks = books.find((book) => book.id === summaryId);
@@ -242,7 +247,10 @@ summaryButton.addEventListener('click', () => {
     summaryDescription.innerHTML = `${description}`;
     
     summaryOverlay.showModal();    
+    });
 });
+
+
 
 summaryClose.addEventListener('click', () => {
     summaryOverlay.close();
