@@ -132,15 +132,22 @@ searchSubmit.addEventListener('submit', (event) => {
 
         if (filters.genre !== 'All Genres' && books[x].genres.includes(filters.genre)) {
             genreMatch = books[x];   
-            searchResult.push(genreMatch);            
+            searchResult.push(genreMatch);           
         };
 
         if (!(filters.title.trim()) && (authorMatch === 'All Authors') && (genreMatch === 'All Genres')) {
             console.log("You searched nothing!")
-            console.log(searchResult)
-
         };
+
     }
+
+    if (searchResult.length > 0) {
+        let resultFragment = createPreviewsFragment(searchResult);
+        mainHtml.replaceChildren(resultFragment); 
+
+        // Change more button content and disable.
+    }
+
 
     // const searchHtml = createPreviewsFragment(searchResult);
     // mainHtml.appendChild(searchHtml )
@@ -156,15 +163,16 @@ searchSubmit.addEventListener('submit', (event) => {
     searchSubmit.reset();
 });
 
-/* -------------------------------DISPLAY SETTINGS--------------------------- */ 
+//     if display.length < 1 
+//     data-list-message.class.add('list__message_show')
+//     else data-list-message.class.remove('list__message_show')
+
+/* -------------------------------DISPLAY SETTINGS--------------------------- */ /* COMPLETED */
 
 // Check darkmode/lightmode settings of user's system and assign them to the websites settings.
 document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 
 let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
-
-// documentElement.style.setProperty('--color-dark', css[v]);
-// documentElement.style.setProperty('--color-light', css[v]);
 
 const settingButton = document.querySelector('[data-header-settings]');
 const settingsCancel = document.querySelector('[data-settings-cancel]');
@@ -232,7 +240,6 @@ if (pagesRemaining <= 0) {
 
 /* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
 
-
 const summaryList = document.querySelectorAll('[data-preview]');
 const summaryOverlay = document.querySelector('[data-list-active]');
 const summaryBlur = document.querySelector('[data-list-blur]');
@@ -267,13 +274,3 @@ const summaryClose = document.querySelector('[data-list-close]');
 summaryClose.addEventListener('click', () => {
     summaryOverlay.close();
 });
-
-
-//     if display.length < 1 
-//     data-list-message.class.add('list__message_show')
-//     else data-list-message.class.remove('list__message_show')
-    
-
-    
-
-    // 
