@@ -16,7 +16,7 @@
 
 // Import data.
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
-import { html } from "./functions.js";
+import { html, ting } from "./functions.js";
 import { createPreviewsFragment, updateRemaining } from "./functions.js"
 
 const range = [0, 36]
@@ -46,6 +46,8 @@ const night = {
 let fragment = createPreviewsFragment(matches, 0, 36)
 
 html.view.mainHtml.appendChild(fragment);
+
+window.scrollTo({ top: 0, behavior: 'smooth' }); ///scroll to top on reload.
 
 /* ------------------------SEARCH FUNCTIONS-------------------------*/
 
@@ -141,20 +143,11 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
         <span class="list__remaining"> (0)</span>
         `;
         html.scroll.moreButton.disabled = true;
-
-        
-    }
-
-
-    // const searchHtml = createPreviewsFragment(searchResult);
-    // mainHtml.appendChild(searchHtml )
+        showPreview();        
+    };
 
     html.search.searchOverlay.close();
 
-    // Appends search results to html.
-    // mainHtml.appendChild(createPreviewsFragment(searchResult));
-
-    //move to top of page after scrolling.
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     html.search.searchSubmit.reset();
@@ -231,27 +224,4 @@ if (pagesRemaining <= 0) {
 
 /* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
 
-const summaryList = document.querySelectorAll('[data-preview]');
-
-[...summaryList].forEach(function(buttons) {
-    let summaryButton = buttons;
-    summaryButton.addEventListener('click', () => {
-
-    let summaryId = summaryButton.getAttribute('data-preview');
-    let searchBooks = books.find((book) => book.id === summaryId);
-    const { author, image, title, description, published } = searchBooks;
-
-    let year = new Date(published).getFullYear();
-
-    html.preview.summaryBlur.src = `${image}`;
-    html.preview.summaryImage.src = `${image}`;
-    html.preview.summaryTitle.innerHTML = `${title}`;
-    html.preview.summarySubTitle.innerHTML = `${authors[author]} (${year})`;
-    html.preview.summaryDescription.innerHTML = `${description}`;
-    
-    html.preview.summaryOverlay.showModal();    
-    });
-});
-    html.preview.summaryClose.addEventListener('click', () => {
-    html.preview.summaryOverlay.close();
-});
+ting();

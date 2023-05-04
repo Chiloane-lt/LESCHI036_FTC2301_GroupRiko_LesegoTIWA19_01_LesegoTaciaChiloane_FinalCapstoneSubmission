@@ -1,4 +1,4 @@
-import { authors, BOOKS_PER_PAGE } from './data.js'
+import { authors, books, BOOKS_PER_PAGE } from './data.js'
 
 /**
  * Creates an html fragment given an object.
@@ -114,6 +114,42 @@ export const html = {
         searchAuthors: document.querySelector('[data-search-authors]'),
         searchGenres: document.querySelector('[data-search-genres]'),
     },
+};
+
+
+/**
+ * Event to show summary overlay after clicking preview button.
+ * This is only placed inside a function to allow re-useability.
+ * 
+ * @param - void
+ * @returns - no return.
+ */
+export const showPreview = () => {
+    const summaryList = document.querySelectorAll('[data-preview]');
+
+[...summaryList].forEach(function(buttons) {
+    let summaryButton = buttons;
+    summaryButton.addEventListener('click', () => {
+
+    let summaryId = summaryButton.getAttribute('data-preview');
+    let searchBooks = books.find((book) => book.id === summaryId);
+    const { author, image, title, description, published } = searchBooks;
+
+    let year = new Date(published).getFullYear();
+
+    html.preview.summaryBlur.src = `${image}`;
+    html.preview.summaryImage.src = `${image}`;
+    html.preview.summaryTitle.innerHTML = `${title}`;
+    html.preview.summarySubTitle.innerHTML = `${authors[author]} (${year})`;
+    html.preview.summaryDescription.innerHTML = `${description}`;
+    
+    html.preview.summaryOverlay.showModal();    
+    });
+});
+    html.preview.summaryClose.addEventListener('click', () => {
+    html.preview.summaryOverlay.close();
+});
+
 }
 
 
