@@ -16,7 +16,7 @@
 
 // Import data.
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
-import { createPreview } from "./functions.js";
+import { html } from "./functions.js";
 import { createPreviewsFragment, updateRemaining } from "./functions.js"
 
 const range = [0, 36]
@@ -45,8 +45,7 @@ const night = {
 
 let fragment = createPreviewsFragment(matches, 0, 36)
 
-let mainHtml = document.querySelector('[data-list-items]');
-mainHtml.appendChild(fragment);
+html.view.mainHtml.appendChild(fragment);
 
 /* ------------------------SEARCH FUNCTIONS-------------------------*/
 
@@ -65,8 +64,7 @@ for (const [id, name] of Object.entries(genres)) {
     genresHtml.appendChild(element);
 };
 
-const searchGenres = document.querySelector('[data-search-genres]');
-searchGenres.appendChild(genresHtml);
+html.search.searchGenres.appendChild(genresHtml);
 
 
 /* Authors */
@@ -84,28 +82,21 @@ for (const [id, name] of Object.entries(authors)) {
     authorsHtml.appendChild(element);
 };
 
-const searchAuthors = document.querySelector('[data-search-authors]');
-searchAuthors.appendChild(authorsHtml);
+html.search.searchAuthors.appendChild(authorsHtml);
 
 /* Search Overlay */ 
 
-const searchCancel = document.querySelector('[data-search-cancel]');
-const searchButton = document.querySelector('[data-header-search]');
-const searchOverlay = document.querySelector('[data-search-overlay]');
-const seacrhTitle = document.querySelector('[data-search-title]');
-const searchSubmit = document.querySelector('[data-search-form]');
-
- searchCancel.addEventListener('click', () => {
-     searchOverlay.close();
-     searchSubmit.reset();
+ html.search.searchCancel.addEventListener('click', () => {
+    html.search.searchOverlay.close();
+    html.search.searchSubmit.reset();
  });
 
- searchButton.addEventListener('click', () => {
-    searchOverlay.showModal();
-    seacrhTitle.focus();                // Might be reduntant.
- }); 
+html.search.searchButton.addEventListener('click', () => {
+html.search.searchOverlay.showModal();
+html.search.seacrhTitle.focus();                // Might be reduntant.
+}); 
 
-searchSubmit.addEventListener('submit', (event) => {
+html.search.searchSubmit.addEventListener('submit', (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
@@ -143,16 +134,22 @@ searchSubmit.addEventListener('submit', (event) => {
 
     if (searchResult.length > 0) {
         let resultFragment = createPreviewsFragment(searchResult);
-        mainHtml.replaceChildren(resultFragment); 
+        html.view.mainHtml.replaceChildren(resultFragment); 
 
-        // Change more button content and disable.
+        html.scroll.moreButton.innerHTML = /* html */ `
+        <span>Show more</span>
+        <span class="list__remaining"> (0)</span>
+        `;
+        html.scroll.moreButton.disabled = true;
+
+        
     }
 
 
     // const searchHtml = createPreviewsFragment(searchResult);
     // mainHtml.appendChild(searchHtml )
 
-    searchOverlay.close();
+    html.search.searchOverlay.close();
 
     // Appends search results to html.
     // mainHtml.appendChild(createPreviewsFragment(searchResult));
@@ -160,7 +157,7 @@ searchSubmit.addEventListener('submit', (event) => {
     //move to top of page after scrolling.
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    searchSubmit.reset();
+    html.search.searchSubmit.reset();
 });
 
 //     if display.length < 1 
@@ -170,21 +167,17 @@ searchSubmit.addEventListener('submit', (event) => {
 /* -------------------------------DISPLAY SETTINGS--------------------------- */ /* COMPLETED */
 
 // Check darkmode/lightmode settings of user's system and assign them to the websites settings.
-document.querySelector('[data-settings-theme]').value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+html.display.settingsTheme.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 
 let v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' : 'day';
 
-const settingButton = document.querySelector('[data-header-settings]');
-const settingsCancel = document.querySelector('[data-settings-cancel]');
-const settingsSubmit = document.querySelector('[data-settings-form]');
-
-settingButton.addEventListener('click', () => {
-    document.querySelector('[data-settings-overlay]').showModal();
+html.display.settingButton.addEventListener('click', () => {
+    html.display.settingsOverlay.showModal();
 });
 
-settingsCancel.addEventListener('click', () => {
-    document.querySelector('[data-settings-overlay]').close();
-    settingsSubmit.reset();
+html.display.settingsCancel.addEventListener('click', () => {
+    html.display.settingsOverlay.close();
+    html.display.settingsSubmit.reset();
 });
 
 const css = {
@@ -192,7 +185,7 @@ const css = {
     night: ['10, 10, 20','255, 255, 255']
 };
 
-settingsSubmit.addEventListener('submit', (event) => {
+html.display.settingsSubmit.addEventListener('submit', (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
@@ -207,30 +200,28 @@ settingsSubmit.addEventListener('submit', (event) => {
         document.documentElement.style.setProperty('--color-dark', css[selected.theme][1]);
     };
 
-    document.querySelector('[data-settings-overlay]').close();
+    html.display.settingsOverlay.close();
 });
 
 
 /* -----------------------------PAGE SCROLL--------------------------------- */  /* COMPLETED */
 
-const moreButton = document.querySelector('[data-list-button]');
-
 let pagesRemaining = matches.length - (page * BOOKS_PER_PAGE);
 
-moreButton.innerHTML = /* html */ `
+html.scroll.moreButton.innerHTML = /* html */ `
     <span>Show more</span>
     <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
 `;
 
-moreButton.addEventListener('click', () => {
+html.scroll.moreButton.addEventListener('click', () => {
 if (pagesRemaining <= 0) {
-    moreButton.disabled;
+    html.scroll.moreButton.disabled;
 }else {
-    document.querySelector('[data-list-items]').appendChild(createPreviewsFragment(matches, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
+    html.view.mainHtml.appendChild(createPreviewsFragment(matches, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
     page = page + 1;
     pagesRemaining = updateRemaining(matches, page);
 
-    moreButton.innerHTML = /* html */ `
+    html.scroll.moreButton.innerHTML = /* html */ `
     <span>Show more</span>
     <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
     `
@@ -241,13 +232,6 @@ if (pagesRemaining <= 0) {
 /* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
 
 const summaryList = document.querySelectorAll('[data-preview]');
-const summaryOverlay = document.querySelector('[data-list-active]');
-const summaryBlur = document.querySelector('[data-list-blur]');
-const summaryImage = document.querySelector('[data-list-image]');
-const summaryTitle = document.querySelector('[data-list-title]');
-const summarySubTitle = document.querySelector('[data-list-subtitle]');
-const summaryDescription = document.querySelector('[data-list-description]');
-const summaryClose = document.querySelector('[data-list-close]');
 
 [...summaryList].forEach(function(buttons) {
     let summaryButton = buttons;
@@ -259,18 +243,15 @@ const summaryClose = document.querySelector('[data-list-close]');
 
     let year = new Date(published).getFullYear();
 
-    summaryBlur.src = `${image}`;
-    summaryImage.src = `${image}`;
-    summaryTitle.innerHTML = `${title}`;
-    summarySubTitle.innerHTML = `${authors[author]} (${year})`;
-    summaryDescription.innerHTML = `${description}`;
+    html.preview.summaryBlur.src = `${image}`;
+    html.preview.summaryImage.src = `${image}`;
+    html.preview.summaryTitle.innerHTML = `${title}`;
+    html.preview.summarySubTitle.innerHTML = `${authors[author]} (${year})`;
+    html.preview.summaryDescription.innerHTML = `${description}`;
     
-    summaryOverlay.showModal();    
+    html.preview.summaryOverlay.showModal();    
     });
 });
-
-
-
-summaryClose.addEventListener('click', () => {
-    summaryOverlay.close();
+    html.preview.summaryClose.addEventListener('click', () => {
+    html.preview.summaryOverlay.close();
 });
