@@ -46,13 +46,13 @@ export const searchAll = (filters, index, searchResult) => {
 
     if (titleState != true) {
         return 
-    }
+    };
     if (authorState != true) {
         return
-    }
+    };
     if(genreState != true ) {
         return 
-    }
+    };
     
     allMatch = books[index];
 

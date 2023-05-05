@@ -12,6 +12,9 @@
  *      To improve readability, code has been rearranged and broken up into sections based on function.
  * 
  * 5 - The dark/light mode icon is measleading. It looks more like a login button.
+ * 
+ * 6 - The strict search message is not responsive. This would have been obvious if multiple
+ *      screen sizes were shown. Either viqa wireframe or demo.
  */
 
 // Import data.
@@ -125,8 +128,8 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
 
     if (searchResult.length > 0) {
         let resultFragment = createPreviewsFragment(searchResult);
-        html.view.mainHtml.replaceChildren(resultFragment); 
-
+                
+        html.view.mainHtml.replaceChildren(resultFragment);
         html.scroll.moreButton.innerHTML = /* html */ `
         <span>Show more</span>
         <span class="list__remaining"> (0)</span>
@@ -136,11 +139,16 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
     };
     
     if (searchResult.length === 0 && strictSearch) {
+        
         html.search.seachMessage.setAttribute('class', 'list__message_show');
 
         const firstElementChild = html.search.seachMessage;
+        
         html.view.mainHtml.innerHTML = '';
-        html.view.mainHtml.append(firstElementChild);
+        html.view.mainHtml.replaceChildren(firstElementChild);
+        html.search.seachMessage.style.display = 'block';
+
+        console.log(html.view.mainHtml)
 
         html.scroll.moreButton.innerHTML = /* html */ `
         <span>Show more</span>
@@ -155,10 +163,6 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });    
 });
-
-//     if display.length < 1 
-//     data-list-message.class.add('list__message_show')
-//     else data-list-message.class.remove('list__message_show')
 
 /* -------------------------------DISPLAY SETTINGS--------------------------- */ /* COMPLETED */
 
