@@ -1,22 +1,3 @@
-
-/* 1 - Code is not commented. Functions must have comments describing 
- *      parameters and logic to improve code readeability.
- *
- * 2 - Functions must be declared using const or let keywords.
- * 
- * 3 - Some code, for instance code creating dropdown menu options,
- *      could be better created using a function. This was done with functions to create HTML fragments.
- *      This had the benefit of being reusable.
- * 
- * 4 - Code is randomly arranged with code for functions that work together placed far from each other.
- *      To improve readability, code has been rearranged and broken up into sections based on function.
- * 
- * 5 - The dark/light mode icon is measleading. It looks more like a login button.
- * 
- * 6 - The strict search message is not responsive. This would have been obvious if multiple
- *      screen sizes were shown. Either viqa wireframe or demo.
- */
-
 // Imports from other files.
 
 import { 
@@ -41,7 +22,7 @@ import {
 /* -----------------------------------------------PAGE LOAD------------------------------------------*/
 
 /**
- * The following occurs on page load. Selects and displays the first 36 books from the books array.
+ * Selects and displays the first 36 books from the books array.
  * Sets page number to 0 on page load.
  * Checks if books exists as the books array.
  */
