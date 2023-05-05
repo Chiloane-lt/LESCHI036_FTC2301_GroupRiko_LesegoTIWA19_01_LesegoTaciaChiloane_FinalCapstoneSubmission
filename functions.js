@@ -113,6 +113,7 @@ export const html = {
         searchAuthors: document.querySelector('[data-search-authors]'),
         searchAuthors: document.querySelector('[data-search-authors]'),
         searchGenres: document.querySelector('[data-search-genres]'),
+        seachMessage: document.querySelector('[data-list-message]'),
     },
 };
 
@@ -149,8 +150,9 @@ export const showPreview = () => {
     html.preview.summaryClose.addEventListener('click', () => {
     html.preview.summaryOverlay.close();
 });
+};
 
-}
+
 
 
 

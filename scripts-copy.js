@@ -18,7 +18,6 @@
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
 import { html, showPreview } from "./functions.js";
 import { createPreviewsFragment, updateRemaining } from "./functions.js"
-import {searchAll, searchAuthor, searchGenre, searchNothing, searchTitle} from './Tests.js'
 
 const range = [0, 36]
 const matches = books; // Try to convert matches to an indepenedent copy.
@@ -104,24 +103,36 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
     const formData = new FormData(event.target);
     const filters = Object.fromEntries(formData);
     const result = Object.entries(filters); 
-    let searchResult = [];
 
-    const strictSearch = ((filters.title.trim() !== '') && (filters.author !== 'any') && (filters.genre !== 'any')) ? true : false;
-    
+    let searchResult = [];
+    let titleMatch = null;
+    let authorMatch = null;
+    let genreMatch = null;
+
     for (let x = 0; x < books.length; x++) {
 
-        if ((filters.title.trim() !== '') && (filters.author !== 'any') && (filters.genre !== 'any')) {
-            searchAll(filters, x, searchResult);
-        } else {
-            searchTitle(filters.title, x, searchResult);
+        if ((filters.title.trim()) && (books[x].title.toLowerCase().includes(filters.title.toLowerCase()))) {
+            titleMatch = books[x];
+            searchResult.push(titleMatch);
+            console.log(searchResult)
+        }; 
         
-            searchAuthor(filters.author, x, searchResult)
-
-            searchGenre(filters.genre, x, searchResult)
-
-            searchNothing(filters.title, filters.author, filters.genre);
+        if (filters.author !== 'any' && books[x].author.includes(filters.author)) {
+            authorMatch = books[x];
+            searchResult.push(authorMatch);            
         };
-    };
+
+        if (filters.genre !== 'any' && books[x].genres.includes(filters.genre)) {
+            genreMatch = books[x];   
+            searchResult.push(genreMatch);       
+        };
+
+        if (!filters.title.trim() && (filters.author === 'any') && (filters.genre === 'any')) {
+            html.search.searchOverlay.close();
+            html.search.searchSubmit.reset();
+        };
+
+    }
 
     if (searchResult.length > 0) {
         let resultFragment = createPreviewsFragment(searchResult);
@@ -133,9 +144,7 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
         `;
         html.scroll.moreButton.disabled = true;
         showPreview();        
-    };
-    
-    if (searchResult.length === 0 && strictSearch) {
+    } else {
         html.search.seachMessage.setAttribute('class', 'list__message_show');
 
         const firstElementChild = html.search.seachMessage;

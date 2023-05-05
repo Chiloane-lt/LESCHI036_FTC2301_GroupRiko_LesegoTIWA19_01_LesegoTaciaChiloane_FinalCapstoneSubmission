@@ -18,7 +18,7 @@
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js"
 import { html, showPreview } from "./functions.js";
 import { createPreviewsFragment, updateRemaining } from "./functions.js"
-import {searchAll, searchAuthor, searchGenre, searchNothing, searchTitle} from './Tests.js'
+import {searchAuthor, searchGenre, searchNothing, searchTitle} from './Tests.js'
 
 const range = [0, 36]
 const matches = books; // Try to convert matches to an indepenedent copy.
@@ -104,50 +104,50 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
     const formData = new FormData(event.target);
     const filters = Object.fromEntries(formData);
     const result = Object.entries(filters); 
+
     let searchResult = [];
 
-    const strictSearch = ((filters.title.trim() !== '') && (filters.author !== 'any') && (filters.genre !== 'any')) ? true : false;
-    
+
     for (let x = 0; x < books.length; x++) {
 
-        if ((filters.title.trim() !== '') && (filters.author !== 'any') && (filters.genre !== 'any')) {
-            searchAll(filters, x, searchResult);
-        } else {
-            searchTitle(filters.title, x, searchResult);
+        // if ((filters.title.trim() !== '') && (filters.author !== 'any') && (filters.genre !== 'any')) 
+        // {
+        //     searchAll(filters, x, searchResult);
+        //     console.log('all')
+        // };
+
+        searchTitle(filters.title, x, searchResult);
         
-            searchAuthor(filters.author, x, searchResult)
+        searchAuthor(filters.author, x, searchResult)
 
-            searchGenre(filters.genre, x, searchResult)
+        searchGenre(filters.genre, x, searchResult)
 
-            searchNothing(filters.title, filters.author, filters.genre);
-        };
-    };
+        searchNothing(filters.title, filters.author, filters.genre);
+    }
 
-    if (searchResult.length > 0) {
-        let resultFragment = createPreviewsFragment(searchResult);
-        html.view.mainHtml.replaceChildren(resultFragment); 
+    // if (searchResult.length > 0) {
+    //     let resultFragment = createPreviewsFragment(searchResult);
+    //     html.view.mainHtml.replaceChildren(resultFragment); 
 
-        html.scroll.moreButton.innerHTML = /* html */ `
-        <span>Show more</span>
-        <span class="list__remaining"> (0)</span>
-        `;
-        html.scroll.moreButton.disabled = true;
-        showPreview();        
-    };
-    
-    if (searchResult.length === 0 && strictSearch) {
-        html.search.seachMessage.setAttribute('class', 'list__message_show');
+    //     html.scroll.moreButton.innerHTML = /* html */ `
+    //     <span>Show more</span>
+    //     <span class="list__remaining"> (0)</span>
+    //     `;
+    //     html.scroll.moreButton.disabled = true;
+    //     showPreview();        
+    // } else {
+    //     html.search.seachMessage.setAttribute('class', 'list__message_show');
 
-        const firstElementChild = html.search.seachMessage;
-        html.view.mainHtml.innerHTML = '';
-        html.view.mainHtml.append(firstElementChild);
+    //     const firstElementChild = html.search.seachMessage;
+    //     html.view.mainHtml.innerHTML = '';
+    //     html.view.mainHtml.append(firstElementChild);
 
-        html.scroll.moreButton.innerHTML = /* html */ `
-        <span>Show more</span>
-        <span class="list__remaining"> (0)</span>
-        `;
-        html.scroll.moreButton.disabled = true;
-    };
+    //     html.scroll.moreButton.innerHTML = /* html */ `
+    //     <span>Show more</span>
+    //     <span class="list__remaining"> (0)</span>
+    //     `;
+    //     html.scroll.moreButton.disabled = true;
+    // };
 
     html.search.searchOverlay.close();
     html.search.seachMessage.setAttribute('class', 'list__message');
