@@ -2,6 +2,10 @@ import { authors, books, BOOKS_PER_PAGE } from './data.js'
 
 // DOM Data
 
+/**
+ * Html elements accessed via queryselector.
+ * @type {object}
+ */
 export const html = {
     view: {
         mainHtml: document.querySelector('[data-list-items]'),
@@ -41,6 +45,9 @@ export const html = {
 
 /**
  * Creates an html fragment given an object.
+ * An input book object is selected and the author, id, title and image are extracted
+ * via destructuring.
+ * A template literate is used to create an html preview of the book.
  * 
  * @param {array} props is an object array with book properties.
  * @returns {HTMLElement} 
@@ -69,6 +76,9 @@ export const createPreview = (props) => {
 
 /**
  * Creates a slice of specified length from the database of books.
+ * This slice is then converted into a preview for each book using the createPreview
+ * function.
+ * The previe is appended to an htlm fragment and this fragment is returned.
  * 
  * @param {array} array is an object array of books with properties.
  * @param {number} start is a number denoting where to start slice.
@@ -113,22 +123,45 @@ export const updateRemaining = (array, page) => {
 
 /**
  * Event function to show summary overlay after clicking preview button.
- * This is only placed inside a function to allow re-useability.
+ * Add overlay information from the books object using template literals.
  * 
  * @param void
  * @returns no return.
  */
 export const showPreview = () => {
+    /**
+     * Node list of all preview buttons.
+     * @type {NodeList}
+     */
     const summaryList = document.querySelectorAll('[data-preview]');
 
     [...summaryList].forEach(function (buttons) {
+         
+        /**
+         * Individual preview button.
+         * @type {HTMLElement}
+         */
         let summaryButton = buttons;
         summaryButton.addEventListener('click', () => {
 
+            /**
+             * Gets book id from the html elemnet's id attribute.
+             * @type {string}
+             */
             let summaryId = summaryButton.getAttribute('data-preview');
+
+            /**
+             * Book object with specified id extracted from books array.
+             * @type {Object}
+             */
             let searchBooks = books.find((book) => book.id === summaryId);
+
             const { author, image, title, description, published } = searchBooks;
 
+            /**
+             * Year of book publication.
+             * @type {number}
+             */
             let year = new Date(published).getFullYear();
 
             html.preview.summaryBlur.src = `${image}`;
@@ -193,10 +226,10 @@ export const searchGenre = (genre, index, searchResult) => {
 
 /**
  * Conducts a strict search for a book object in the books array.
- * @param {*} filters is an object containing information extracted from the search
+ * @param {Object} filters is an object containing information extracted from the search
  * form.
- * @param {*} index of current book object in books.
- * @param {*} searchResult array where searchresults will be stored.
+ * @param {number} index of current book object in books.
+ * @param {Array} searchResult array where searchresults will be stored.
  * @returns 
  */
 export const searchAll = (filters, index, searchResult) => {
