@@ -60,6 +60,53 @@ html.view.mainHtml.appendChild(fragment);
 
 window.scrollTo({ top: 0, behavior: 'smooth' }); ///scroll to top on reload.
 
+
+/* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
+
+/**
+ * Opens books summary overlay.
+ */
+showPreview();
+
+
+/* -----------------------------PAGE SCROLL--------------------------------- */  /* COMPLETED */
+
+/**
+ * The following allows scrolling down the list of books using a button to show more.
+ * On page load, 36 pages are shown. 
+ * Listens for an event on the show more button. If the event is fired, selects the next 36 books from
+ * the books array and appends them as html fragments.
+ * Updates the show more button to show the remaining books that have not been viewed.
+ */
+
+/**
+ * Number of books remaining calculated using the page number.
+ * @type {number}
+ */
+let pagesRemaining = books.length - (page * BOOKS_PER_PAGE);
+
+html.scroll.moreButton.innerHTML = /* html */ `
+    <span>Show more</span>
+    <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
+`;
+
+html.scroll.moreButton.addEventListener('click', () => {
+if (pagesRemaining <= 0) {
+    html.scroll.moreButton.disabled;
+}else {
+    html.view.mainHtml.appendChild(createPreviewsFragment(books, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
+    page = page + 1;
+    pagesRemaining = updateRemaining(books, page);
+
+    html.scroll.moreButton.innerHTML = /* html */ `
+    <span>Show more</span>
+    <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
+    `
+    }
+});
+
+
+
 /* ------------------------SEARCH FUNCTIONS-------------------------*/
 
 /* Genres */
@@ -231,6 +278,8 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });    
 });
 
+
+
 /* -------------------------------DISPLAY SETTINGS--------------------------- */ /* COMPLETED */
 
 /**
@@ -247,7 +296,7 @@ html.search.searchSubmit.addEventListener('submit', (event) => {
 html.display.settingsTheme.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 
 /**
- * Saves color values for day and night settings.
+ * For saving color values for day and night settings.
  * @type {object} css
  */
 const css = {
@@ -288,48 +337,3 @@ html.display.settingsSubmit.addEventListener('submit', (event) => {
 
     html.display.settingsOverlay.close();
 });
-
-
-/* -----------------------------PAGE SCROLL--------------------------------- */  /* COMPLETED */
-
-/**
- * The following allows scrolling down the list of books using a button to show more.
- * On page load, 36 pages are shown. 
- * Listens for an event on the show more button. If the event is fired, selects the next 36 books from
- * the books array and appends them as html fragments.
- * Updates the show more button to show the remaining books that have not been viewed.
- */
-
-/**
- * Number of books remaining calculated using the page number.
- * @type {number}
- */
-let pagesRemaining = books.length - (page * BOOKS_PER_PAGE);
-
-html.scroll.moreButton.innerHTML = /* html */ `
-    <span>Show more</span>
-    <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
-`;
-
-html.scroll.moreButton.addEventListener('click', () => {
-if (pagesRemaining <= 0) {
-    html.scroll.moreButton.disabled;
-}else {
-    html.view.mainHtml.appendChild(createPreviewsFragment(books, (page * BOOKS_PER_PAGE), (page + 1) * BOOKS_PER_PAGE));
-    page = page + 1;
-    pagesRemaining = updateRemaining(books, page);
-
-    html.scroll.moreButton.innerHTML = /* html */ `
-    <span>Show more</span>
-    <span class="list__remaining"> (${pagesRemaining > 0 ? pagesRemaining : 0})</span>
-    `
-    }
-});
-
-
-/* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
-
-/**
- * Opens books summary overlay.
- */
-showPreview();
